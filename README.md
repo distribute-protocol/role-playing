@@ -16,7 +16,7 @@ for tokens we're gonna use poker chips with different colours
 
 ### 1. People buy in for $ or clout
 
-roll a dice for how much clout everyone 
+roll a dice for how much clout everyone
   (there's a minimum amount everyone has)
 people can choose how much money they buy in with
   (there's a bonding curve that covers how much they get)
@@ -65,7 +65,7 @@ people can choose how much money they buy in with
   people need enough reputation to pick up these tasks
   a formula for reputation calculations
 
-  do stuff ??? 
+  do stuff ???
   for our purposes, get everyone to keep any receipts
 
 ### 6. They submit their work
@@ -97,3 +97,43 @@ people can choose how much money they buy in with
   what type of decisions do you think would be aided by this process
   any questions from you?
 
+  ## rough frontend for formulas
+
+display
+  * total number of tokens in the system
+  * total number of reputation in the system
+  * total number of dollars in the system
+
+calculate costs
+  * buying tokens --> price of buying X tokens in dollars
+    --> (total dollars in system / total number of tokens) * (number of tokens to buy) / (number of tokens to buy + total number of tokens)
+  * selling tokens --> price of selling X tokens in dollars (different than purchase price)
+    --> (number of tokens to sell * total dollars in system) / (total number of tokens)
+
+  * cost of proposing a project with tokens
+    --> (cost of project in dollars / total dollars in system) * (total number of tokens) / 20
+  * cost of proposing a project with reputation
+    --> (cost of project in dollars / total dollars in system) * (total number of reputation) / 20
+  ***** add 11% of proposed cost to actual project cost
+    --> 5% for the proposer
+    --> 5% for the validators
+    --> 1% for the originator
+
+  * how much a user's task list is worth
+    --> (((user token balance / total number of tokens) + (user reputation balance / total number of reputation)) / 2) + (((user tokens staked on project / total tokens staked on project) + (user reputation staked on project / total reputation staked on project)) / 2) / 2
+
+  * how much reputation a user needs to claim a task
+    --> project's reputation cost * task percentage
+
+  * cost to validate a task
+
+calculate rewards
+  * reward proposer
+    --> if their project makes it to completion (assume 100% pass percentage), their collateral tokens or reputation are returned to them, and they are rewarded with 5% of the proposed project cost
+  * reward originator
+    --> if the project makes it to completion (assume 100% pass percentage), they are rewarded with 1% of the proposed project cost
+  * reward worker
+    --> if their task is validated complete, they receive twice their collateral reputation (returned & rewarded)
+  * reward validator
+    --> if their validation is correct, they receive their validation entry token fee back as well as their validation position's proportion of 5% of the project cost
+    --> if their validation is incorrect, they receive half of their validation entry token fee back
