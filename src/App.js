@@ -11,12 +11,22 @@ class App extends Component {
       buyTokens: 0,
       sellTokens: 0,
       proposedCost: 0,
-      actualCost: 0
+      actualCost: 0,
+      userTokens: 0,
+      userReputation: 0,
+      userStakedTokens: 0,
+      userStakedReputation: 0,
+      totalStakedTokens: 0,
+      totalStakedReputation: 0,
+      taskWeighting: 0,
+      projectCost: 0
     }
     this.storeInput = this.storeInput.bind(this)
     this.buyTokens = this.buyTokens.bind(this)
     this.sellTokens = this.sellTokens.bind(this)
     this.proposeProject = this.proposeProject.bind(this)
+    this.taskWeighting = this.taskWeighting.bind(this)
+    this.reputationCollateral = this.reputationCollateral.bind(this)
   }
 
   storeInput (e, variable) {
@@ -54,6 +64,22 @@ class App extends Component {
     } else {
       return 0
     }
+  }
+
+  taskWeighting () {
+    let taskWeighting
+    this.state.totalTokens === 0 || this.state.totalReputation === 0 || this.state.totalStakedTokens === 0 || this.state.totalStakedReputation === 0
+      ? taskWeighting = 0
+      : taskWeighting = (((this.state.userTokens / this.state.totalTokens) + (this.state.userReputation / this.state.totalReputation)) / 2) + (((this.state.userStakedTokens / this.state.totalStakedTokens) + (this.state.userStakedReputation / this.state.totalStakedReputation)) / 2) / 2
+    return !isNaN(taskWeighting)
+      ? taskWeighting
+      : 0
+  }
+
+  reputationCollateral () {
+    return !isNaN(this.state.taskWeighting) && !isNaN(this.state.projectCost)
+      ? this.state.taskWeighting * this.state.projectCost / 100
+      : 0
   }
 
   render () {
@@ -101,6 +127,22 @@ class App extends Component {
             </p>
           </div>
           <p style={{marginLeft: 10}}>To account for rewards, the actual project cost will be ${this.state.actualCost.toFixed(2)}.</p>
+        </div>
+        <div style={{border: '1px solid black', marginBottom: -1}}>
+          <h3 style={{marginLeft: 10}}>Submitting Task Lists</h3>
+          <div style={{marginLeft: 10}}>
+            <p>A user with <input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'userTokens')} />tokens,<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'userReputation')} />reputation,</p>
+            <p style={{marginTop: -25}}>who has contributed<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'userStakedTokens')} />of the<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'totalStakedTokens')} />staked tokens on a project,</p>
+            <p style={{marginTop: -25}}>and<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'userStakedReputation')} />of the<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'totalStakedReputation')} />staked reputation on a project,</p>
+            <p style={{marginTop: -10}}>has a task list vote worth {this.taskWeighting().toFixed(4)} for that project.</p>
+          </div>
+        </div>
+        <div style={{border: '1px solid black', marginBottom: -1}}>
+          <h3 style={{marginLeft: 10}}>Claiming a Task</h3>
+          <div style={{marginLeft: 10}}>
+            <p>To claim a task whose budget is <input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'taskWeighting')} />percent of a project worth<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'projectCost')} />reputation,</p>
+            <p style={{marginTop: -10}}>you must put {this.reputationCollateral().toFixed(0)} reputation down as collateral.</p>
+          </div>
         </div>
       </div>
     )
