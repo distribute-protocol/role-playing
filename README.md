@@ -126,6 +126,7 @@ calculate costs
     --> project's reputation cost * task percentage
 
   * cost to validate a task
+    --> task percentage * proposed cost / total dollars / totalTokens / 100
 
 calculate rewards
   * reward proposer

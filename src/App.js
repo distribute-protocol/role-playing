@@ -19,7 +19,9 @@ class App extends Component {
       totalStakedTokens: 0,
       totalStakedReputation: 0,
       taskWeighting: 0,
-      projectCost: 0
+      projectCost: 0,
+      dollarCost: 0,
+      taskPercentage: 0
     }
     this.storeInput = this.storeInput.bind(this)
     this.buyTokens = this.buyTokens.bind(this)
@@ -27,6 +29,7 @@ class App extends Component {
     this.proposeProject = this.proposeProject.bind(this)
     this.taskWeighting = this.taskWeighting.bind(this)
     this.reputationCollateral = this.reputationCollateral.bind(this)
+    this.validationFee = this.validationFee.bind(this)
   }
 
   storeInput (e, variable) {
@@ -82,11 +85,17 @@ class App extends Component {
       : 0
   }
 
+  validationFee () {
+    return !isNaN(this.state.taskPercentage) && this.state.totalTokens !== 0 && this.state.totalDollars !== 0
+      ? this.state.taskPercentage * (this.state.dollarCost / 1.11) / (this.state.totalDollars / this.state.totalTokens) / 100
+      : 0
+  }
+
   render () {
     return (
       <div >
-        <div style={{border: '1px solid black', marginBottom: -1}}>
-          <h3 style={{marginLeft: 10}}>System Details</h3>
+        <div style={{border: '1px solid gray', marginBottom: -1}}>
+          <h3 style={{marginLeft: 10, marginBottom: -5}}>System Details</h3>
           <div style={{display: 'flex'}}>
             <div style={{display: 'flex', flexDirection: 'column', textAlign: 'center', marginLeft: 10}}>
               <p>Total Tokens</p>
@@ -102,10 +111,10 @@ class App extends Component {
             </div>
           </div>
         </div>
-        <div style={{border: '1px solid black', marginBottom: -1}}>
-          <h3 style={{marginLeft: 10}}>Buying & Selling Tokens</h3>
+        <div style={{border: '1px solid gray', marginBottom: -1}}>
+          <h3 style={{marginLeft: 10, marginBottom: -5}}>Buying & Selling Tokens</h3>
           <div style={{display: 'flex'}}>
-            <div style={{display: 'flex', textAlign: 'center', marginLeft: 10}}>
+            <div style={{display: 'flex', textAlign: 'center', marginLeft: 10, marginBottom: -20}}>
               <p>It will cost ${this.buyTokens().toFixed(2)} to buy</p>
               <input style={{height: 15, marginTop: 15, marginLeft: 5, marginRight: 5}} onChange={(e) => this.storeInput(e, 'buyTokens')} />
               <p>tokens.</p>
@@ -119,17 +128,17 @@ class App extends Component {
             </div>
           </div>
         </div>
-        <div style={{border: '1px solid black', marginBottom: -1}}>
-          <h3 style={{marginLeft: 10}}>Proposing Projects</h3>
-          <div style={{display: 'flex', textAlign: 'center', marginLeft: 10}}>
+        <div style={{border: '1px solid gray', marginBottom: -1}}>
+          <h3 style={{marginLeft: 10, marginBottom: -20}}>Proposing Projects</h3>
+          <div style={{display: 'flex', textAlign: 'center', marginLeft: 10, marginBottom: -20}}>
             <p>To propose a project costing $<input style={{height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'proposedCost')} />
               you will need to put down {this.proposeProject('tokens').toFixed(0)} tokens or {this.proposeProject('reputation').toFixed(0)} reputation.
             </p>
           </div>
           <p style={{marginLeft: 10}}>To account for rewards, the actual project cost will be ${this.state.actualCost.toFixed(2)}.</p>
         </div>
-        <div style={{border: '1px solid black', marginBottom: -1}}>
-          <h3 style={{marginLeft: 10}}>Submitting Task Lists</h3>
+        <div style={{border: '1px solid gray', marginBottom: -1}}>
+          <h3 style={{marginLeft: 10, marginBottom: -20}}>Submitting Task Lists</h3>
           <div style={{marginLeft: 10}}>
             <p>A user with <input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'userTokens')} />tokens,<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'userReputation')} />reputation,</p>
             <p style={{marginTop: -25}}>who has contributed<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'userStakedTokens')} />of the<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'totalStakedTokens')} />staked tokens on a project,</p>
@@ -137,12 +146,32 @@ class App extends Component {
             <p style={{marginTop: -10}}>has a task list vote worth {this.taskWeighting().toFixed(4)} for that project.</p>
           </div>
         </div>
-        <div style={{border: '1px solid black', marginBottom: -1}}>
-          <h3 style={{marginLeft: 10}}>Claiming a Task</h3>
+        <div style={{border: '1px solid gray', marginBottom: -1}}>
+          <h3 style={{marginLeft: 10, marginBottom: -20}}>Claiming a Task</h3>
           <div style={{marginLeft: 10}}>
             <p>To claim a task whose budget is <input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'taskWeighting')} />percent of a project worth<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'projectCost')} />reputation,</p>
             <p style={{marginTop: -10}}>you must put {this.reputationCollateral().toFixed(0)} reputation down as collateral.</p>
           </div>
+        </div>
+        <div style={{border: '1px solid gray', marginBottom: -1}}>
+          <h3 style={{marginLeft: 10, marginBottom: -20}}>Validating a Task</h3>
+          <div style={{marginLeft: 10}}>
+            <p>To validate a task worth <input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'taskPercentage')} />percent of a project costing<input style={{marginLeft: 5, height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'reputationCost')} />reputation and $<input style={{height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'dollarCost')} />,</p>
+            <p style={{marginTop: -10}}>you must put {this.validationFee().toFixed(0)} tokens down as collateral.</p>
+          </div>
+        </div>
+        <div style={{border: '1px solid gray', marginBottom: -1}}>
+          <h3 style={{marginLeft: 10}}>Calculate Rewards</h3>
+          <div style={{marginLeft: 10}}>
+            <p>reward proposer</p>
+          </div>
+          <div style={{marginLeft: 10}}>
+            <p>reward originator (creator of the winning task list)</p>
+          </div>
+          <div style={{marginLeft: 10}}>
+            <p>reward validators</p>
+          </div>
+
         </div>
       </div>
     )
