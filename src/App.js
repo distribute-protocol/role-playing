@@ -21,7 +21,10 @@ class App extends Component {
       taskWeighting: 0,
       projectCost: 0,
       dollarCost: 0,
-      taskPercentage: 0
+      taskPercentage: 0,
+      proposerRewardProjectCost: 0,
+      originatorRewardProjectCost: 0,
+      validatorRewardProjectCost: 0
     }
     this.storeInput = this.storeInput.bind(this)
     this.buyTokens = this.buyTokens.bind(this)
@@ -30,6 +33,9 @@ class App extends Component {
     this.taskWeighting = this.taskWeighting.bind(this)
     this.reputationCollateral = this.reputationCollateral.bind(this)
     this.validationFee = this.validationFee.bind(this)
+    this.rewardProposer = this.rewardProposer.bind(this)
+    this.rewardOriginator = this.rewardOriginator.bind(this)
+    this.rewardValidator = this.rewardValidator.bind(this)
   }
 
   storeInput (e, variable) {
@@ -88,6 +94,24 @@ class App extends Component {
   validationFee () {
     return !isNaN(this.state.taskPercentage) && this.state.totalTokens !== 0 && this.state.totalDollars !== 0
       ? this.state.taskPercentage * (this.state.dollarCost / 1.11) / (this.state.totalDollars / this.state.totalTokens) / 100
+      : 0
+  }
+
+  rewardProposer () {
+    return !isNaN(this.state.proposerRewardProjectCost)
+      ? this.state.proposerRewardProjectCost * 0.05
+      : 0
+  }
+
+  rewardOriginator () {
+    return !isNaN(this.state.originatorRewardProjectCost)
+      ? this.state.originatorRewardProjectCost * 0.01
+      : 0
+  }
+
+  rewardValidator () {
+    return !isNaN(this.state.validatorRewardProjectCost)
+      ? [36, 26, 20, 16, 2].map(x => { return (x * this.state.validatorRewardProjectCost * 0.05 / 100).toFixed(2) })
       : 0
   }
 
@@ -161,17 +185,16 @@ class App extends Component {
           </div>
         </div>
         <div style={{border: '1px solid gray', marginBottom: -1}}>
-          <h3 style={{marginLeft: 10}}>Calculate Rewards</h3>
+          <h3 style={{marginLeft: 10, marginBottom: -20}}>Calculate Rewards</h3>
           <div style={{marginLeft: 10}}>
-            <p>reward proposer</p>
+            <p>Proposer reward for project costing $<input style={{height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'proposerRewardProjectCost')} />: ${this.rewardProposer().toFixed(2)}</p>
           </div>
-          <div style={{marginLeft: 10}}>
-            <p>reward originator (creator of the winning task list)</p>
+          <div style={{marginLeft: 10, marginTop: -20}}>
+            <p>Originator reward for project costing $<input style={{height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'originatorRewardProjectCost')} />: ${this.rewardOriginator().toFixed(2)}</p>
           </div>
-          <div style={{marginLeft: 10}}>
-            <p>reward validators</p>
+          <div style={{marginLeft: 10, marginTop: -20}}>
+            <p>Validator reward for project costing $<input style={{height: 15, marginTop: 15, marginRight: 5}} onChange={(e) => this.storeInput(e, 'validatorRewardProjectCost')} />: ${this.rewardValidator()[0]}, ${this.rewardValidator()[1]}, ${this.rewardValidator()[2]}, ${this.rewardValidator()[3]}, ${this.rewardValidator()[4]}</p>
           </div>
-
         </div>
       </div>
     )
