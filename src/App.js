@@ -26,16 +26,6 @@ class App extends Component {
       originatorRewardProjectCost: 0,
       validatorRewardProjectCost: 0
     }
-    this.storeInput = this.storeInput.bind(this)
-    this.buyTokens = this.buyTokens.bind(this)
-    this.sellTokens = this.sellTokens.bind(this)
-    this.proposeProject = this.proposeProject.bind(this)
-    this.taskWeighting = this.taskWeighting.bind(this)
-    this.reputationCollateral = this.reputationCollateral.bind(this)
-    this.validationFee = this.validationFee.bind(this)
-    this.rewardProposer = this.rewardProposer.bind(this)
-    this.rewardOriginator = this.rewardOriginator.bind(this)
-    this.rewardValidator = this.rewardValidator.bind(this)
   }
 
   storeInput (e, variable) {
@@ -45,12 +35,15 @@ class App extends Component {
   }
 
   buyTokens () {
-    let buyPrice
-    this.state.totalTokens === 0 || this.state.totalDollars === 0
-      ? buyPrice = 0.01 * this.state.buyTokens // based on baseCost in DistributeToken.sol where ether is ~$200
-      : buyPrice = (this.state.totalDollars / this.state.totalTokens) * this.state.buyTokens / (this.state.buyTokens + this.state.totalTokens)
-    return !isNaN(buyPrice)
-      ? buyPrice
+    let baseCost = 0.01
+    let dollarsRequired, currentPrice, targetPrice
+    this.state.totalTokens === 0 || this.state.totalDollars === 0 || ((this.state.totalTokens / this.state.totalDollars) < baseCost)
+      ? currentPrice = baseCost
+      : currentPrice = this.state.totalTokens / this.state.totalDollars
+    targetPrice = currentPrice * (1 + this.state.buyTokens) / (this.state.buyTokens + this.state.totalTokens)
+    dollarsRequired = targetPrice * this.state.buyTokens
+    return !isNaN(dollarsRequired)
+      ? dollarsRequired
       : 0
   }
 
@@ -73,6 +66,10 @@ class App extends Component {
     } else {
       return 0
     }
+  }
+
+  getActualCost () {
+    return this.state.proposedCost * 1.11
   }
 
   taskWeighting () {
@@ -159,7 +156,7 @@ class App extends Component {
               you will need to put down {this.proposeProject('tokens').toFixed(0)} tokens or {this.proposeProject('reputation').toFixed(0)} reputation.
             </p>
           </div>
-          <p style={{marginLeft: 10}}>To account for rewards, the actual project cost will be ${this.state.actualCost.toFixed(2)}.</p>
+          <p style={{marginLeft: 10}}>To account for rewards, the actual project cost will be ${this.getActualCost().toFixed(2)}.</p>
         </div>
         <div style={{border: '1px solid gray', marginBottom: -1}}>
           <h3 style={{marginLeft: 10, marginBottom: -20}}>Submitting Task Lists</h3>
