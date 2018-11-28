@@ -35,12 +35,12 @@ class App extends Component {
   }
 
   buyTokens () {
-    let baseCost = 0.01
+    let baseCost = 0.05
     let dollarsRequired, currentPrice, targetPrice
-    this.state.totalTokens === 0 || this.state.totalDollars === 0 || ((this.state.totalTokens / this.state.totalDollars) < baseCost)
+    this.state.totalTokens === 0 || this.state.totalDollars === 0 || ((this.state.totalDollars / this.state.totalTokens) < baseCost)
       ? currentPrice = baseCost
-      : currentPrice = this.state.totalTokens / this.state.totalDollars
-    targetPrice = currentPrice * (1 + this.state.buyTokens) / (this.state.buyTokens + this.state.totalTokens)
+      : currentPrice = this.state.totalDollars / this.state.totalTokens
+    targetPrice = currentPrice * (1 + (this.state.buyTokens / (this.state.buyTokens + this.state.totalTokens)))
     dollarsRequired = targetPrice * this.state.buyTokens
     return !isNaN(dollarsRequired)
       ? dollarsRequired
